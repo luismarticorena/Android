@@ -1,0 +1,42 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+	<TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="WEB SERVICE CLIMA" />
+	<TextView
+        android:id="@+id/Localizacion"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Pais"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+	<EditText
+	    android:id="@+id/nombrePais"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:ems="10"
+	    android:hint="nombre del pais en ingles" >
+
+        <requestFocus />
+	</EditText>
+	<TextView
+        android:id="@+id/Temperatura"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Ciudad"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+	<EditText
+        android:id="@+id/nombreCiudad"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:ems="10" />
+    <Button
+        android:id="@+id/botonOK"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Consultar" />
+
+</LinearLayout>
