@@ -5,12 +5,12 @@ Android
 
 El presente proyecto consiste en una aplicacion que se conecte a un web service y nos muestre el clima de una ciudad en especifico.
 
-![screenshot](inter.png)
+![screenshot](inter.PNG)
 
 Simplemente ingresamos el nombre del pais y la ciudad (en ingles, ya que el web service estaba en ingles) de los que queremos obtener el clima y damos click al boton "consultar"
 Se nos muestra la ventana con el clima de la ciudad
 
-![screenshot](Captura2.png)
+![screenshot](Captura2.PNG)
 
 ##Codigo
 
