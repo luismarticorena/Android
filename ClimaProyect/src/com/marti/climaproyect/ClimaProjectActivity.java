@@ -9,14 +9,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.EditText;
 import android.widget.Toast;
 
 public class ClimaProjectActivity extends Activity {
 	private static final int REQUEST_TEXT = 0;
 	private ProgressDialog pd;
-	private TextView ciudad;
-	private TextView pais;
+	private EditText ciudad;
+	private EditText pais;
 	private Button boton1;
 	private String res;
 	private Weather clim = new Weather();
@@ -27,8 +27,8 @@ public class ClimaProjectActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		context = this;
 		setContentView(R.layout.activity_clima_project);
-		ciudad = (TextView) findViewById(R.id.nombreCiudad);
-		pais = (TextView) findViewById(R.id.nombrePais);
+		ciudad = (EditText) findViewById(R.id.nombreCiudad);
+		pais = (EditText) findViewById(R.id.nombrePais);
 		boton1 = (Button) findViewById(R.id.botonOK);
 
 		boton1.setOnClickListener(new OnClickListener() {
