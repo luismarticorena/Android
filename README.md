@@ -22,28 +22,66 @@ Tenemos las siguientes clases
 * Weather: La Clase que tiene los atributos del clima y sus metodos set y get
 
 
-This is the default code generated
+###ClimaProyectActivity
 ```java
-package com.example.converter;
+public class ClimaProjectActivity extends Activity {
+    private static final int REQUEST_TEXT = 0;
+	private ProgressDialog pd;
+	private TextView ciudad;
+	private TextView pais;
+	private Button boton1;
+	private String res;
+	private Weather clim = new Weather();
+	
+	private Context context;
 
-import android.os.Bundle;
-import android.app.Activity;
-import android.view.Menu;
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		context = this;
+		setContentView(R.layout.activity_clima_project);
+		ciudad = (TextView) findViewById(R.id.nombreCiudad);
+		pais = (TextView) findViewById(R.id.nombrePais);
+		boton1 = (Button) findViewById(R.id.botonOK);
 
-public class MainActivity extends Activity {
+		boton1.setOnClickListener(new OnClickListener() {
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-    }
+			@Override
+			public void onClick(View arg0) {
+				new DownloadTask2().execute("");
+				pd = ProgressDialog.show(context, "Por favor espere","Consultando Clima", true, false);
+			}
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }    
+		});
+	}
+	
+	private class DownloadTask2 extends AsyncTask<String, Void, Object> {
+		protected Integer doInBackground(String... args) {
+			ConeccionWS ws = new ConeccionWS();
+			clim = ws.getClima(ciudad.getText().toString(), pais.getText()
+					.toString());
+			Intent i = new Intent(ClimaProjectActivity.this,MostrarClimaActivity.class);
+			i.putExtra("Ciudad", clim.getLocation());
+			i.putExtra("Temperatura", clim.getTemperature());
+			i.putExtra("Humedad", clim.getRelativeHumidity());
+			i.putExtra("Presion", clim.getPreassure());
+			i.putExtra("Rocio", clim.getDewPoint());
+			i.putExtra("Visibilidad", clim.getVisibility());
+			i.putExtra("Viento", clim.getWind());
+			i.putExtra("Cielo", clim.getSkyConditions());
+
+			ClimaProjectActivity.this.startActivityForResult(i,REQUEST_TEXT);
+			return 1;
+		}
+
+		protected void onPostExecute(Object result) {
+			// Se elimina la pantalla de por favor espere.
+			pd.dismiss();
+			// Se muestra mensaje con la respuesta del servicio web
+			Toast.makeText(context, "Clima: " + res, Toast.LENGTH_LONG).show();
+			super.onPostExecute(result);
+		}
+	}
+
 }
 ```
 
