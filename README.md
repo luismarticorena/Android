@@ -24,7 +24,8 @@ Tenemos las siguientes clases
 
 ###ClimaProyectActivity
 ```java
-private static final int REQUEST_TEXT = 0;
+public class ClimaProjectActivity extends Activity {
+	private static final int REQUEST_TEXT = 0;
 	private ProgressDialog pd;
 	private EditText ciudad;
 	private EditText pais;
@@ -96,9 +97,137 @@ public void onClick(View arg0) {
 ```
 Se ejecuta la tarea en background y se muestra el progressDialog.
 
+##ConeccionWS
+En esta clase se realiza la coneccion a la web service, para ello tenemos que tener claro 4 datos de la web service
+
+*NAMESPACE
+*URL
+*METHOD_NAME
+*SOAP_ACTION
+
+Estos se encuentran en la pagina del web service como se muestra a continuacion:
+![screenshot](webservice.PNG)
+OJO: se hace uso de la libreria ksoap2 disponible [aqui](https://code.google.com/p/ksoap2-android/source/browse/m2-repo/com/google/code/ksoap2-android/ksoap2-android-assembly/3.0.0/ksoap2-android-assembly-3.0.0-jar-with-dependencies.jar)
+
+```java
+public class ConeccionWS {
+	public Weather getClima(String ciudad,String pais) {
+		String res=null;
+		ParserXML par=new ParserXML();
+		Weather clima = new Weather();
+		
+		String NAMESPACE = "http://www.webserviceX.NET";
+		String URL="http://www.webservicex.net/globalweather.asmx";
+		String METHOD_NAME = "GetWeather";
+		String SOAP_ACTION = "http://www.webserviceX.NET/GetWeather";
+		
+		SoapObject rpc;
+		rpc = new SoapObject(NAMESPACE, METHOD_NAME);
+		//De acuerdo a la documentacion del ws, hay 2 parametros que debemos pasar nombre de la ciuda y del pais
+		//Para obtener informacion del WS , se puede consultar http://www.webservicex.net/globalweather.asmx?WSDL
+		rpc.addProperty("CityName", ciudad);
+		rpc.addProperty("CountryName", pais);
+		SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+		envelope.bodyOut = rpc;
+		
+		envelope.dotNet = true;
+		envelope.encodingStyle = SoapSerializationEnvelope.XSD;
+		
+		//Para acceder al WS se crea un objeto de tipo HttpTransportSE
+		HttpTransportSE androidHttpTransport= null;
+		try {
+			
+			androidHttpTransport = new HttpTransportSE(URL);
+			androidHttpTransport.debug = true;
+			//Llamado al servicio web . Son el nombre del SoapAction, que se encuentra en la documentacion del servicio web y el objeto envelope
+			androidHttpTransport.call(SOAP_ACTION, envelope);
+			//Respuesta del Servicio web
+			
+			res = envelope.getResponse().toString();
+		}catch (Exception e){
+			System.out.println(e.getMessage());
+			Log.d("setlocation", e.getMessage());
+		}
+		try {
+			//llamamos al parser del archivo XML
+			clima=par.Parsear(res);
+		} catch (XmlPullParserException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return clima;
+	}
+}
+```
+Esta clase nos comunica con el web service pero nos entrega un archivo en XML dificil de leer de esta manera:
+```xml
+<string xmlns="http://www.webserviceX.NET">
+<?xml version="1.0" encoding="utf-16"?> <CurrentWeather> <Location>Trujillo, Peru (SPRU) 08-06S 079-02W 30M</Location> <Time>May 20, 2013 - 05:00 AM EDT / 2013.05.20 0900 UTC</Time> <Wind> from the SSE (150 degrees) at 6 MPH (5 KT):0</Wind> <Visibility> 3 mile(s):0</Visibility> <SkyConditions> overcast</SkyConditions> <Temperature> 64 F (18 C)</Temperature> <DewPoint> 60 F (16 C)</DewPoint> <RelativeHumidity> 88%</RelativeHumidity> <Pressure> 29.88 in. Hg (1012 hPa)</Pressure> <Status>Success</Status> </CurrentWeather>
+</string>
+```
+Por eso debemos pasarlo a un parser que nos desglose la informacion obtenida.
+
+##ParserXML
 
 
 
+```java
+public class ParserXML {
+	public Weather Parsear(String docXML) throws XmlPullParserException,
+			IOException {
+
+		Weather clima = new Weather();
+		int i=1;
+		
+		XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+		factory.setNamespaceAware(true);
+		XmlPullParser xpp = factory.newPullParser();
+
+		xpp.setInput(new StringReader(docXML));
+		int eventType = xpp.getEventType();
+
+		while (eventType != XmlPullParser.END_DOCUMENT) {
+			if (eventType == XmlPullParser.START_DOCUMENT) {
+				Log.d("setlocation", "Comienza Documento");
+			} else if (eventType == XmlPullParser.START_TAG) {
+				Log.d("setlocation", "Comienza tag" + xpp.getName());
+			} else if (eventType == XmlPullParser.END_TAG) {
+				Log.d("setlocation", "Termina tag" + xpp.getName());
+			} else if (eventType == XmlPullParser.TEXT) {
+
+				Log.d("setlocation", "Texto" + xpp.getText());
+				Log.d("setlocation", ""+i+"");
+				if(i%2==0){clima.setGeneral(xpp.getText());}
+				i+=1;
+			}
+			eventType = xpp.next();
+			
+		}
+		Log.d("setlocation", "Termina Documento");
+		Log.d("setlocation", clima.toString());
+		return clima;
+	}
+}
+```
+
+
+
+```java
+
+```
+##MostrarClimaActivity
+
+
+```java
+
+```
+
+
+##Weather
 
 
 
