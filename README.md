@@ -100,10 +100,10 @@ Se ejecuta la tarea en background y se muestra el progressDialog.
 ##ConeccionWS
 En esta clase se realiza la coneccion a la web service, para ello tenemos que tener claro 4 datos de la web service
 
-*NAMESPACE
-*URL
-*METHOD_NAME
-*SOAP_ACTION
+* NAMESPACE
+* URL
+* METHOD_NAME
+* SOAP_ACTION
 
 Estos se encuentran en la pagina del web service como se muestra a continuacion:
 ![screenshot](webservice.PNG)
@@ -173,7 +173,8 @@ Por eso debemos pasarlo a un parser que nos desglose la informacion obtenida.
 
 ##ParserXML
 
-
+En el parser hacemos uso de la libreria que viene incluida en el sdk de android para parsear XML, cuya documentacion se encuentra [aqui](http://developer.android.com/reference/org/xmlpull/v1/XmlPullParser.html)
+Simplemente nos da elemento por elemento pero como no necesitamos las cabezeras solo usamos los que sean tipo texto y estos los guardamos en un objeto Weather
 
 ```java
 public class ParserXML {
@@ -213,26 +214,126 @@ public class ParserXML {
 	}
 }
 ```
-
-
+##Weather
+La clase Weather tiene los siguientes atributos, son los elementos del clima que nos brinda el web service
 
 ```java
-
+String Location;
+String Time;
+String Wind;
+String Visibility;
+String SkyConditions;
+String Temperature;
+String DewPoint;
+String RelativeHumidity;
+String Preassure;
+String Status;
 ```
+Simplemente se implemento el constructor y los metodos set y get para cada atributo, cabe recalcar el metodo setGeneral que nos setea uno por uno los atributos del objeto clima que tengamos, este es el metodo que usamos en el parser para llenar objeto puesto que los atributos estan en orden entonces voy seteando uno por uno usando un solo metodo
+
+```java
+public void setGeneral(String s1) {
+	if (this.Location== null){
+	Location = s1;} else if (this.Time == null){
+	Time = s1;}else if (this.Wind == null){
+	Wind = s1;} else if (this.Visibility == null){
+	Visibility = s1;}else if (this.SkyConditions == null){
+	SkyConditions = s1;}   else if (this.Temperature == null){
+	Temperature = s1;}else if (this.DewPoint == null){
+	DewPoint = s1;}else if (this.RelativeHumidity == null){
+	RelativeHumidity = s1;} else if (this.Preassure == null){
+	Preassure = s1;}else if (this.Status == null){
+	Status = s1;}	
+}
+```
+Tambien se modificaron algunos metodos get para un mejor display en el momento de pasarlo a la view.
+```java
+	...
+	public String getLocation() {
+		return Location.substring(0, Location.indexOf(" "));
+	}
+
+	public String getSkyConditions() {
+		Log.d("condiciones", "("+SkyConditions+")"); 
+		if(SkyConditions.contains("partly cloudy")){		
+			return "Parcialmente Nublado";}
+		else if (SkyConditions.contains("clear")){
+			return "Despejado";}
+		else if (SkyConditions.contains("obscured")){
+			return "Oscuro";}
+		else if (SkyConditions.contains("overcast")){
+		return "Nublado";}
+		else return SkyConditions;
+	}
+
+	public String getTemperature() {
+		return Temperature.substring(Temperature.indexOf("(")+1, Temperature.indexOf(")"));
+	}
+
+	public String getDewPoint() {
+		return DewPoint.substring(DewPoint.indexOf("(")+1, DewPoint.indexOf(")"));
+	}
+
+	public String getPreassure() {
+		return Preassure.substring(Preassure.indexOf("(")+1, Preassure.indexOf(")"));
+	}
+	...
+```
+
 ##MostrarClimaActivity
 
+Por ultimo tenemos nuestra segunda activity que simplemente muestra los resultados obtenidos, obtenemos los datos que pasamos de la activity principal con el comando ```java this.getIntent().getExtras().getString("Ciudad")```
 
 ```java
-
+public class MostrarClimaActivity extends Activity {
+	private TextView textView;
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_mostrar_clima);
+		
+		textView = (TextView) this.findViewById(R.id.Localizacion);
+		textView.setText(this.getIntent().getExtras().getString("Ciudad"));
+        
+		textView = (TextView) this.findViewById(R.id.Temperatura);
+		textView.setText(this.getIntent().getExtras().getString("Temperatura"));
+        
+		textView = (TextView) this.findViewById(R.id.CondicionesCielo);
+		textView.setText(this.getIntent().getExtras().getString("Cielo"));
+        
+		textView = (TextView) this.findViewById(R.id.Humedad);
+		textView.setText(this.getIntent().getExtras().getString("Humedad"));
+        
+        	textView = (TextView) this.findViewById(R.id.Presion);
+        	textView.setText(this.getIntent().getExtras().getString("Presion"));
+        
+       		textView = (TextView) this.findViewById(R.id.Rocio);
+        	textView.setText(this.getIntent().getExtras().getString("Rocio"));
+        
+       		textView = (TextView) this.findViewById(R.id.Visibilidad);
+        	textView.setText(this.getIntent().getExtras().getString("Visibilidad"));
+        
+       	 	textView = (TextView) this.findViewById(R.id.Viento);
+        	textView.setText(this.getIntent().getExtras().getString("Viento"));
+        
+        	Button ok = (Button) this.findViewById(R.id.botonOK);
+        	ok.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				MostrarClimaActivity.this.finish();
+			}        	
+        	});
+	}
+}
 ```
 
+##OTROS
 
-##Weather
+Tambien hay q mencionar que se debe añadir
 
-
-
-
-```java
-
+```xml
+<uses-permission android:name="android.permission.INTERNET" />
 ```
+al archivo manifest pues se necesita acceder a internet para conectar con el web service
+
 
