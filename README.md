@@ -327,7 +327,7 @@ public class MostrarClimaActivity extends Activity {
 }
 ```
 
-##OTROS
+##Otros
 
 Tambien hay q mencionar que se debe añadir
 
@@ -337,3 +337,8 @@ Tambien hay q mencionar que se debe añadir
 al archivo manifest pues se necesita acceder a internet para conectar con el web service
 
 
+##Problemas
+
+* No se ha considerado excepciones para evitar que se ingrese un pais o ciudad q no existe
+* Para algunas ciudades el Web Service no envia todos los campos y el programa se cae
+* El web service esta en ingles por tanto se deben ingresar los datos en ingles y las respuestas tambien estan en ingles
