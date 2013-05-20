@@ -35,15 +35,13 @@ public class ClimaProjectActivity extends Activity {
 
 			@Override
 			public void onClick(View arg0) {
-				new DownloadTask2().execute("");
-				pd = ProgressDialog.show(context, "Por favor espere","Consultando Clima", true, false);
-				
+				new TareaDescarga().execute("");
+				pd = ProgressDialog.show(context, "Por favor espere","Consultando Clima", true, false);				
 			}
-
 		});
 	}
 	
-	private class DownloadTask2 extends AsyncTask<String, Void, Object> {
+	private class TareaDescarga extends AsyncTask<String, Void, Object> {
 		protected Integer doInBackground(String... args) {
 			ConeccionWS ws = new ConeccionWS();
 			clim = ws.getClima(ciudad.getText().toString(), pais.getText()
@@ -70,5 +68,4 @@ public class ClimaProjectActivity extends Activity {
 			super.onPostExecute(result);
 		}
 	}
-
 }
