@@ -61,11 +61,11 @@ public class Weather {
 		Location = s1;} else if (this.Time == null){
 		Time = s1;}else if (this.Wind == null){
 		Wind = s1;} else if (this.Visibility == null){
-		Visibility = s1;} else if (this.SkyConditions == null){
-		SkyConditions = s1;}else if (this.Temperature == null){
-		Temperature = s1;} else if (this.DewPoint == null){
-		DewPoint = s1;} else if (this.RelativeHumidity == null){
-		RelativeHumidity = s1;}else if (this.Preassure == null){
+		Visibility = s1;}else if (this.SkyConditions == null){
+		SkyConditions = s1;}   else if (this.Temperature == null){
+		Temperature = s1;}else if (this.DewPoint == null){
+		DewPoint = s1;}else if (this.RelativeHumidity == null){
+		RelativeHumidity = s1;} else if (this.Preassure == null){
 		Preassure = s1;}else if (this.Status == null){
 		Status = s1;}
 		
@@ -96,6 +96,8 @@ public class Weather {
 			return "Despejado";}
 		else if (SkyConditions.contains("obscured")){
 			return "Oscuro";}
+		else if (SkyConditions.contains("overcast")){
+		return "Nublado";}
 		else return SkyConditions;
 	}
 
